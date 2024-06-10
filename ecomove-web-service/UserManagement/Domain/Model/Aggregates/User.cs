@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using ecomove_web_service.BookingReservation.Domain.Model.Aggregates;
 using ecomove_web_service.CustomerSupport.Domain.Model.Aggregates;
+using ecomove_web_service.Payment.Domain.Model.Entities;
 using ecomove_web_service.UserManagement.Domain.Model.ValueObjects;
 
 namespace ecomove_web_service.UserManagement.Domain.Model.Aggregates;
@@ -40,5 +41,7 @@ public partial class User
     public ICollection<Booking> Bookings { get; }
     
     public ICollection<Ticket> Tickets { get; }
+    
+    public ICollection<Card> Cards { get; }
     
 }

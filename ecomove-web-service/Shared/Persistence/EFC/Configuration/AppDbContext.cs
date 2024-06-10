@@ -1,6 +1,7 @@
 using ecomove_web_service.BookingReservation.Domain.Model.Aggregates;
 using ecomove_web_service.CustomerSupport.Domain.Model.Aggregates;
 using ecomove_web_service.CustomerSupport.Domain.Model.Entities;
+using ecomove_web_service.Payment.Domain.Model.Entities;
 using ecomove_web_service.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using ecomove_web_service.UserManagement.Domain.Model.Aggregates;
 using ecomove_web_service.UserManagement.Domain.Model.Entities;
@@ -56,6 +57,12 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
             .HasMany(u => u.Tickets)
             .WithOne(t => t.User)
             .HasForeignKey(t => t.UserId)
+            .HasPrincipalKey(u => u.UserId);
+        
+        builder.Entity<User>()
+            .HasMany(u => u.Cards)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId)
             .HasPrincipalKey(u => u.UserId);
         
         builder.Entity<Membership>().HasKey(m => m.MembershipId);
@@ -150,6 +157,14 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
             .WithOne(t => t.TicketCategory)
             .HasForeignKey(t => t.TicketCategoryId)
             .HasPrincipalKey(tc => tc.TicketCategoryId);
+        
+        // Payment Context
+        
+        builder.Entity<Card>().HasKey(c => c.CardId);
+        builder.Entity<Card>().Property(c => c.CardId).IsRequired().ValueGeneratedOnAdd();
+        builder.Entity<Card>().Property(c => c.UserId).IsRequired();
+        builder.Entity<Card>().Property(c => c.CardNumber).IsRequired();
+        builder.Entity<Card>().Property(c => c.ExpirationDate).IsRequired();
         
         builder.UseSnakeCaseWithPluralizedTableNamingConvention();
     }

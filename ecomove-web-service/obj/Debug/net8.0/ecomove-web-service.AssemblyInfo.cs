@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ecomove-web-service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21b36ca87138d13aa1a0269992ea5b0892f82e95")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+71ae3cce4e32bad5ae4a44c78a9ebeee7000fcc8")]
 [assembly: System.Reflection.AssemblyProductAttribute("ecomove-web-service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ecomove-web-service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

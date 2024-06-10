@@ -158,6 +158,12 @@ builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>(
 builder.Services.AddScoped<ITicketCategoryCommandService, TicketCategoryCommandService>();
 builder.Services.AddScoped<ITicketCategoryQueryService, TicketCategoryQueryService>();
 
+// Payment Bounded Context Injection Configuration
+
+builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<ICardCommandService, CardCommandService>();
+builder.Services.AddScoped<ICardQueryService, CardQueryService>();
+
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
@@ -173,6 +179,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRequestAuthorization();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
