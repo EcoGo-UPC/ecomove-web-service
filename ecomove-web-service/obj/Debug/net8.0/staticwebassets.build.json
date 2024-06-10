@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "VyFJmTY6aHwQEHAPIUVImspTgoBSh0+3FsSfTuKlX54=",
+  "Source": "ecomove-web-service",
+  "BasePath": "_content/ecomove-web-service",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

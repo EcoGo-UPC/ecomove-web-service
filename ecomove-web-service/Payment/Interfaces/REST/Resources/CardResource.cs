@@ -1,0 +1,3 @@
+namespace ecomove_web_service.Payment.Interfaces.REST.Resources;
+
+public record CardResource(int CardId, int UserId, string CardNumber, string ExpirationDate);
