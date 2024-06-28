@@ -3,6 +3,12 @@ using ecomove_web_service.UserManagement.Domain.Model.Aggregates;
 
 namespace ecomove_web_service.CustomerSupport.Domain.Model.Aggregates;
 
+/**
+ * Ticket class
+ * Represents a ticket
+ * A ticket is a request for customer support
+ */
+
 public partial class Ticket
 {
   public Ticket()

@@ -3,6 +3,12 @@ using ecomove_web_service.CustomerSupport.Domain.Model.Aggregates;
 
 namespace ecomove_web_service.CustomerSupport.Domain.Model.Entities;
 
+/**
+ * <summary>
+ * Represents a category of tickets.
+ * A ticket category is a type of ticket.
+ * </summary>
+ */
 public class TicketCategory
 {
     public TicketCategory()

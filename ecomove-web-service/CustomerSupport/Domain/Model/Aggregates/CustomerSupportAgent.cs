@@ -3,6 +3,10 @@ using ecomove_web_service.CustomerSupport.Domain.Model.ValueObjects;
 
 namespace ecomove_web_service.CustomerSupport.Domain.Model.Aggregates;
 
+/**
+ * Represents a customer support agent.
+ * A customer support agent is a person who provides support to users.
+ */
 public partial class CustomerSupportAgent
 {
     public CustomerSupportAgent()
