@@ -39,6 +39,27 @@ public class EcoVehicleTypesController
     }
     
     /**
+     * Get All Eco Vehicle Types.
+     * <summary>
+     *     Gets all eco vehicle types
+     * </summary>
+     * <returns>The eco vehicle types resources.</returns>
+     */
+    [HttpGet]
+    [SwaggerOperation(
+        Summary = "Gets all eco vehicle types",
+        Description = "Gets all eco vehicle types",
+        OperationId = "GetAllEcoVehicleTypes")]
+    [SwaggerResponse(200, "The eco vehicle types were found", typeof(EcoVehicleTypeResource))]
+    public async Task<IActionResult> GetAllEcoVehicleTypes()
+    {
+        var getAllEcoVehicleTypesQuery = new GetAllEcoVehicleTypesQuery();
+        var ecoVehicleTypes = await ecoVehicleTypeQueryService.Handle(getAllEcoVehicleTypesQuery);
+        var ecoVehicleTypeResources = ecoVehicleTypes.Select(EcoVehicleTypeResourceFromEntityAssembler.ToResourceFromEntity);
+        return Ok(ecoVehicleTypeResources);
+    }
+    
+    /**
      * Get Eco Vehicle Type By Id.
      * <summary>
      *     Gets an eco vehicle type by its id.

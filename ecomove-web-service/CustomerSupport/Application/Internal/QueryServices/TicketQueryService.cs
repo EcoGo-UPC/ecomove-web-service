@@ -5,6 +5,12 @@ using ecomove_web_service.CustomerSupport.Domain.Services;
 
 namespace ecomove_web_service.CustomerSupport.Application.Internal.QueryServices;
 
+/**
+ * TicketQueryService class
+ * Represents a service for tickets
+ * A ticket is a request for help from a user
+ * A ticket can be assigned to a customer support agent
+ */
 public class TicketQueryService(ITicketRepository ticketRepository)
     : ITicketQueryService
 {
