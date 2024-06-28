@@ -1,7 +1,7 @@
 using ecomove_web_service.BookingReservation.Domain.Model.Aggregates;
 using ecomove_web_service.CustomerSupport.Domain.Model.Aggregates;
 using ecomove_web_service.CustomerSupport.Domain.Model.Entities;
-using ecomove_web_service.Payment.Domain.Model.Entities;
+using ecomove_web_service.Payment.Domain.Model.Aggregates;
 using ecomove_web_service.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using ecomove_web_service.UserManagement.Domain.Model.Aggregates;
 using ecomove_web_service.UserManagement.Domain.Model.Entities;
@@ -24,7 +24,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        
+
         // UserManagement Context
 
         builder.Entity<User>().HasKey(u => u.UserId);
@@ -46,31 +46,30 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
             .WithOne(b => b.User)
             .HasForeignKey(b => b.UserId)
             .HasPrincipalKey(u => u.UserId);
-        
+
         builder.Entity<User>()
             .HasMany(u => u.Memberships)
             .WithOne(m => m.User)
             .HasForeignKey(m => m.UserId)
             .HasPrincipalKey(u => u.UserId);
-        
+
         builder.Entity<User>()
             .HasMany(u => u.Tickets)
             .WithOne(t => t.User)
             .HasForeignKey(t => t.UserId)
             .HasPrincipalKey(u => u.UserId);
-        
         builder.Entity<User>()
-            .HasMany(u => u.Cards)
-            .WithOne(c => c.User)
-            .HasForeignKey(c => c.UserId)
+            .HasMany(u => u.Transactions)
+            .WithOne(t => t.User)
+            .HasForeignKey(t => t.UserId)
             .HasPrincipalKey(u => u.UserId);
-        
+
         builder.Entity<Membership>().HasKey(m => m.MembershipId);
         builder.Entity<Membership>().Property(m => m.MembershipId).IsRequired().ValueGeneratedOnAdd();
         builder.Entity<Membership>().Property(m => m.UserId).IsRequired();
         builder.Entity<Membership>().Property(m => m.MembershipCategoryId).IsRequired();
         builder.Entity<Membership>().Property(m => m.EndDate).IsRequired();
-        
+
         builder.Entity<MembershipCategory>().HasKey(mc => mc.MembershipCategoryId);
         builder.Entity<MembershipCategory>().Property(mc => mc.MembershipCategoryId).IsRequired().ValueGeneratedOnAdd();
         builder.Entity<MembershipCategory>().Property(mc => mc.Name).IsRequired();
@@ -79,7 +78,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
             .WithOne(m => m.MembershipCategory)
             .HasForeignKey(m => m.MembershipCategoryId)
             .HasPrincipalKey(mc => mc.MembershipCategoryId);
-        
+
         // VehicleManagement Context
 
         builder.Entity<EcoVehicle>().HasKey(v => v.EcoVehicleId);
@@ -100,7 +99,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
             .WithOne(b => b.EcoVehicle)
             .HasForeignKey(b => b.VehicleId)
             .HasPrincipalKey(v => v.EcoVehicleId);
-        
+
         builder.Entity<EcoVehicleType>().HasKey(et => et.EcoVehicleTypeId);
         builder.Entity<EcoVehicleType>().Property(et => et.EcoVehicleTypeId).IsRequired().ValueGeneratedOnAdd();
         builder.Entity<EcoVehicleType>().Property(et => et.Name).IsRequired();
@@ -109,9 +108,9 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
             .WithOne(v => v.EcoVehicleType)
             .HasForeignKey(v => v.EcoVehicleTypeId)
             .HasPrincipalKey(et => et.EcoVehicleTypeId);
-        
+
         // BookingReservation Context
-        
+
         builder.Entity<Booking>().HasKey(b => b.BookingId);
         builder.Entity<Booking>().Property(b => b.BookingId).IsRequired().ValueGeneratedOnAdd();
         builder.Entity<Booking>().Property(b => b.UserId).IsRequired();
@@ -119,7 +118,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Booking>().Property(b => b.StartTime).IsRequired();
         builder.Entity<Booking>().Property(b => b.EndTime).IsRequired();
         builder.Entity<Booking>().Property(b => b.Status).IsRequired();
-        
+
         // CustomerSupport Context
 
         builder.Entity<CustomerSupportAgent>().HasKey(c => c.CustomerSupportAgentId);
@@ -140,7 +139,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
             .WithOne(t => t.CustomerSupportAgent)
             .HasForeignKey(t => t.CustomerSupportAgentId)
             .HasPrincipalKey(c => c.CustomerSupportAgentId);
-        
+
         builder.Entity<Ticket>().HasKey(t => t.TicketId);
         builder.Entity<Ticket>().Property(t => t.TicketId).IsRequired().ValueGeneratedOnAdd();
         builder.Entity<Ticket>().Property(t => t.UserId).IsRequired();
@@ -148,7 +147,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Ticket>().Property(t => t.Title).IsRequired();
         builder.Entity<Ticket>().Property(t => t.Description).IsRequired();
         builder.Entity<Ticket>().Property(t => t.Status).IsRequired();
-        
+
         builder.Entity<TicketCategory>().HasKey(tc => tc.TicketCategoryId);
         builder.Entity<TicketCategory>().Property(tc => tc.TicketCategoryId).IsRequired().ValueGeneratedOnAdd();
         builder.Entity<TicketCategory>().Property(tc => tc.Name).IsRequired();
@@ -157,15 +156,12 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
             .WithOne(t => t.TicketCategory)
             .HasForeignKey(t => t.TicketCategoryId)
             .HasPrincipalKey(tc => tc.TicketCategoryId);
-        
-        // Payment Context
-        
-        builder.Entity<Card>().HasKey(c => c.CardId);
-        builder.Entity<Card>().Property(c => c.CardId).IsRequired().ValueGeneratedOnAdd();
-        builder.Entity<Card>().Property(c => c.UserId).IsRequired();
-        builder.Entity<Card>().Property(c => c.CardNumber).IsRequired();
-        builder.Entity<Card>().Property(c => c.ExpirationDate).IsRequired();
-        
+
+        builder.Entity<Transaction>().HasKey(t => t.TransactionId);
+        builder.Entity<Transaction>().Property(t => t.TransactionId).IsRequired().ValueGeneratedOnAdd();
+        builder.Entity<Transaction>().Property(t => t.UserId).IsRequired();
+        builder.Entity<Transaction>().Property(t => t.Amount).IsRequired();
+
         builder.UseSnakeCaseWithPluralizedTableNamingConvention();
     }
 }
