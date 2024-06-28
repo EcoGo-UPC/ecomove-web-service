@@ -66,7 +66,7 @@ public class EcoVehiclesController(IEcoVehicleCommandService ecoVehicleCommandSe
         return Ok(ecoVehicleResource);
     }
     
-    [HttpGet("{type}")]
+    [HttpGet("{ecoVehicleTypeId:int}")]
     [SwaggerOperation(
         Summary = "Gets all eco vehicles by type",
         Description = "Gets all eco vehicles for a given type",
@@ -80,7 +80,7 @@ public class EcoVehiclesController(IEcoVehicleCommandService ecoVehicleCommandSe
         return Ok(ecoVehicleResources);
     }
     
-    [HttpGet("type/{type}/model/{model}")]
+    [HttpGet("type/{ecoVehicleTypeId:int}/model/{model}")]
     [SwaggerOperation(
         Summary = "Gets all eco vehicles by type and model",
         Description = "Gets all eco vehicles for a given type and model",
@@ -108,15 +108,15 @@ public class EcoVehiclesController(IEcoVehicleCommandService ecoVehicleCommandSe
         return Ok(ecoVehicleResources);
     }
     
-    [HttpGet("type/{type}/status/{status}")]
+    [HttpGet("status/{status}")]
     [SwaggerOperation(
-        Summary = "Gets all eco vehicles by type and status",
-        Description = "Gets all eco vehicles for a given type and status",
-        OperationId = "GetAllEcoVehiclesByTypeAndStatus")]
+        Summary = "Gets all eco vehicles by status",
+        Description = "Gets all eco vehicles for a given status",
+        OperationId = "GetAllEcoVehiclesByStatus")]
     [SwaggerResponse(200, "The eco vehicles were found", typeof(EcoVehicleResource))]
-    public async Task<IActionResult> GetAllEcoVehiclesByTypeAndStatus(int ecoVehicleTypeId, string status)
+    public async Task<IActionResult> GetAllEcoVehiclesByStatus(string status)
     {
-        var getEcoVehiclesByTypeAndStatusQuery = new GetAllEcoVehiclesByEcoVehicleTypeIdAndStatusQuery(ecoVehicleTypeId, status);
+        var getEcoVehiclesByTypeAndStatusQuery = new GetAllEcoVehiclesByStatusQuery(status);
         var ecoVehicles = await ecoVehicleQueryService.Handle(getEcoVehiclesByTypeAndStatusQuery);
         var ecoVehicleResources = ecoVehicles.Select(EcoVehicleResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(ecoVehicleResources);

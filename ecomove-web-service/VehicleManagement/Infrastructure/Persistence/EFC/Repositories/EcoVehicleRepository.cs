@@ -6,6 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ecomove_web_service.VehicleManagement.Infrastructure.Persistence.EFC.Repositories;
 
+/**
+ * EcoVehicleRepository class
+ * Represents the repository for the EcoVehicle entity
+ * <param name="context">AppDbContext instance</param>
+ */
 public class EcoVehicleRepository(AppDbContext context) : BaseRepository<EcoVehicle>(context), IEcoVehicleRepository
 {
     public Task<EcoVehicle?> FindEcoVehicleByEcoVehicleIdAsync(int ecoVehicleId)
@@ -46,15 +51,15 @@ public class EcoVehicleRepository(AppDbContext context) : BaseRepository<EcoVehi
         return result.AsEnumerable();
     }
     
-    public async Task<IEnumerable<EcoVehicle>> FindAllEcoVehiclesByEcoVehicleTypeIdAndStatusAsync(int ecoVehicleTypeId, string status)
+    public async Task<IEnumerable<EcoVehicle>> FindAllEcoVehiclesByStatusAsync(string status)
     {
-        if (ecoVehicleTypeId < 0 || string.IsNullOrEmpty(status))
+        if (string.IsNullOrEmpty(status))
         {
             throw new ArgumentException("Type and status must be provided.");
         }
 
         var result = await Context.Set<EcoVehicle>()
-            .Where(ecoVehicle => ecoVehicle.EcoVehicleId == ecoVehicleTypeId && ecoVehicle.Status == status)
+            .Where(ecoVehicle => ecoVehicle.Status == status)
             .ToListAsync();
 
         return result.AsEnumerable();

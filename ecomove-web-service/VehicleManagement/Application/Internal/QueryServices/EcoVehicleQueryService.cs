@@ -27,9 +27,9 @@ public class EcoVehicleQueryService(IEcoVehicleRepository ecoVehicleRepository) 
         return await ecoVehicleRepository.FindAllEcoVehiclesByBatteryLevelGreaterThanAsync(query.BatteryLevel);
     }
     
-    public async Task<IEnumerable<EcoVehicle>> Handle(GetAllEcoVehiclesByEcoVehicleTypeIdAndStatusQuery query)
+    public async Task<IEnumerable<EcoVehicle>> Handle(GetAllEcoVehiclesByStatusQuery query)
     {
-        return await ecoVehicleRepository.FindAllEcoVehiclesByEcoVehicleTypeIdAndStatusAsync(query.EcoVehicleTypeId, query.Status);
+        return await ecoVehicleRepository.FindAllEcoVehiclesByStatusAsync(query.Status);
     }
     
     public async Task<IEnumerable<EcoVehicle>> Handle(GetAllEcoVehiclesByEcoVehicleTypeIdQuery idQuery)

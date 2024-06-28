@@ -1,4 +1,5 @@
 using ecomove_web_service.BookingReservation.Application.Internal.CommandServices;
+using ecomove_web_service.BookingReservation.Application.Internal.OutboundServices.ACL;
 using ecomove_web_service.BookingReservation.Application.Internal.QueryServices;
 using ecomove_web_service.BookingReservation.Domain.Repositories;
 using ecomove_web_service.BookingReservation.Domain.Services;
@@ -8,6 +9,12 @@ using ecomove_web_service.CustomerSupport.Application.Internal.QueryServices;
 using ecomove_web_service.CustomerSupport.Domain.Repositories;
 using ecomove_web_service.CustomerSupport.Domain.Services;
 using ecomove_web_service.CustomerSupport.Infrastructure.Persistence.EFC.Repositories;
+using ecomove_web_service.Payment.Application.Internal.CommandServices;
+using ecomove_web_service.Payment.Application.Internal.QueryServices;
+using ecomove_web_service.Payment.Domain.Repositories;
+using ecomove_web_service.Payment.Domain.Services;
+using ecomove_web_service.Payment.Infrastructure.Persistence.EFC.Repositories;
+using ecomove_web_service.Shared.Application.Internal.OutboundServices;
 using ecomove_web_service.Shared.Domain.Repositories;
 using ecomove_web_service.Shared.Infrastructure.Persistence.EFC.Configuration;
 using ecomove_web_service.Shared.Infrastructure.Persistence.EFC.Repositories;
@@ -29,6 +36,8 @@ using ecomove_web_service.VehicleManagement.Application.Internal.QueryServices;
 using ecomove_web_service.VehicleManagement.Domain.Repositories;
 using ecomove_web_service.VehicleManagement.Domain.Services;
 using ecomove_web_service.VehicleManagement.Infrastructure.Persistence.EFC.Repositories;
+using ecomove_web_service.VehicleManagement.Interfaces.ACL;
+using ecomove_web_service.VehicleManagement.Interfaces.ACL.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -73,7 +82,7 @@ builder.Services.AddSwaggerGen(
                 Contact = new OpenApiContact
                 {
                     Name = "Ecomove",
-                    Email = "ecomove@gmail.com" 
+                    Email = "ecomove@gmail.com"
                 }
             });
         c.EnableAnnotations();
@@ -118,6 +127,7 @@ builder.Services.AddScoped<IUserCommandService, UserCommandService>();
 builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IHashingService, HashingService>();
+builder.Services.AddScoped<ExternalUserService>();
 builder.Services.AddScoped<IUserManagementContextFacade, UserManagementContextFacade>();
 
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
@@ -137,6 +147,8 @@ builder.Services.AddScoped<IEcoVehicleQueryService, EcoVehicleQueryService>();
 builder.Services.AddScoped<IEcoVehicleTypeRepository, EcoVehicleTypeRepository>();
 builder.Services.AddScoped<IEcoVehicleTypeCommandService, EcoVehicleTypeCommandService>();
 builder.Services.AddScoped<IEcoVehicleTypeQueryService, EcoVehicleTypeQueryService>();
+builder.Services.AddScoped<ExternalEcoVehicleService>();
+builder.Services.AddScoped<IVehicleManagementContextFacade, VehicleManagementContextFacade>();
 
 // BookingReservation Bounded Context Injection Configuration
 
@@ -158,13 +170,22 @@ builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>(
 builder.Services.AddScoped<ITicketCategoryCommandService, TicketCategoryCommandService>();
 builder.Services.AddScoped<ITicketCategoryQueryService, TicketCategoryQueryService>();
 
-// Payment Bounded Context Injection Configuration
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ITransactionCommandService, TransactionCommandService>();
+builder.Services.AddScoped<ITransactionQueryService, TransactionQueryService>();
 
-builder.Services.AddScoped<ICardRepository, CardRepository>();
-builder.Services.AddScoped<ICardCommandService, CardCommandService>();
-builder.Services.AddScoped<ICardQueryService, CardQueryService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Policy", app =>
+    {
+        app.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -184,6 +205,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseCors("Policy");
 
 app.UseAuthorization();
 
