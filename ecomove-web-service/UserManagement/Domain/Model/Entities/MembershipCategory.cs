@@ -2,6 +2,11 @@ using ecomove_web_service.UserManagement.Domain.Model.Aggregates;
 
 namespace ecomove_web_service.UserManagement.Domain.Model.Entities;
 
+/**
+ * MembershipCategory class
+ * Represents a membership category
+ * A membership category is a type of membership
+ */
 public class MembershipCategory
 {
     public MembershipCategory()

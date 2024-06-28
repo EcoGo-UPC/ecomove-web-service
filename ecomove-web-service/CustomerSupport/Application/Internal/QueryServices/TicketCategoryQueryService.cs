@@ -5,6 +5,11 @@ using ecomove_web_service.CustomerSupport.Domain.Services;
 
 namespace ecomove_web_service.CustomerSupport.Application.Internal.QueryServices;
 
+/**
+ * TicketCategoryQueryService class
+ * Represents a service for ticket categories
+ * A ticket category is a type of ticket
+ */
 public class TicketCategoryQueryService(ITicketCategoryRepository ticketCategoryRepository)
     : ITicketCategoryQueryService
 {

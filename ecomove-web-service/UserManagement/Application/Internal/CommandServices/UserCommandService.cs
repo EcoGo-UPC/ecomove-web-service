@@ -7,6 +7,16 @@ using ecomove_web_service.UserManagement.Domain.Services;
 
 namespace ecomove_web_service.UserManagement.Application.Internal.CommandServices;
 
+/**
+ * This class is responsible for handling user commands.
+ * <param name="userRepository">The user repository.</param>
+ * <param name="tokenService">The token service.</param>
+ * <param name="hashingService">The hashing service.</param>
+ * <param name="unitOfWork">The unit of work for the database.</param>
+ * <remarks>
+ * This class implements the IUserCommandService interface.
+ * </remarks>
+ */
 public class UserCommandService(
     IUserRepository userRepository,
     ITokenService tokenService,

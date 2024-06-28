@@ -3,6 +3,9 @@ using ecomove_web_service.UserManagement.Domain.Model.Entities;
 
 namespace ecomove_web_service.UserManagement.Domain.Model.Aggregates;
 
+/**
+ * Membership aggregate
+ */
 public partial class Membership
 {
     public Membership()

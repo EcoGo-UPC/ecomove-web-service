@@ -1,5 +1,10 @@
 namespace ecomove_web_service.VehicleManagement.Domain.ValueObjects;
 
+/**
+ * Location record
+ * <param name="Latitude">Latitude</param>
+ * <param name="Longitude">Longitude</param>
+ */
 public record Location(double Latitude, double Longitude)
 {
     public Location() : this(0, 0)

@@ -1,11 +1,16 @@
 using System.Text.Json.Serialization;
 using ecomove_web_service.BookingReservation.Domain.Model.Aggregates;
 using ecomove_web_service.CustomerSupport.Domain.Model.Aggregates;
-using ecomove_web_service.Payment.Domain.Model.Entities;
+using ecomove_web_service.Payment.Domain.Model.Aggregates;
 using ecomove_web_service.UserManagement.Domain.Model.ValueObjects;
 
 namespace ecomove_web_service.UserManagement.Domain.Model.Aggregates;
 
+/**
+ * User class
+ * Represents a user in the system
+ * A user can have multiple memberships, bookings and tickets
+ */
 public partial class User
 {
     public User()
@@ -16,6 +21,7 @@ public partial class User
         PasswordHash = string.Empty;
     }
     
+    
     public User(string firstName, string lastName, string email, string username, string passwordHash)
     {
         Name = new PersonName(firstName, lastName);
@@ -23,8 +29,6 @@ public partial class User
         Email = new EmailAddress(email);
         PasswordHash = passwordHash;
     }
-    
-    
     
     public int UserId { get; }
     public PersonName Name { get; private set; }
@@ -42,6 +46,6 @@ public partial class User
     
     public ICollection<Ticket> Tickets { get; }
     
-    public ICollection<Card> Cards { get; }
+    public ICollection<Transaction> Transactions { get; }
     
 }
