@@ -3,6 +3,9 @@ using EntityFrameworkCore.CreatedUpdatedDate.Contracts;
 
 namespace ecomove_web_service.UserManagement.Domain.Model.Aggregates;
 
+/**
+ * MembershipAudit class
+ */
 public partial class Membership: IEntityWithCreatedUpdatedDate
 {
     [Column("CreatedAt")] public DateTimeOffset? CreatedDate { get; set; }

@@ -5,6 +5,10 @@ using ecomove_web_service.UserManagement.Domain.Services;
 
 namespace ecomove_web_service.UserManagement.Application.Internal.QueryServices;
 
+/**
+ * MembershipQueryService is a class that implements the IMembershipQueryService interface.
+ * <param name="membershipRepository">The membership repository.</param>
+ */
 public class MembershipQueryService(IMembershipRepository membershipRepository): IMembershipQueryService
 {
     public async Task<Membership?> Handle(GetMembershipByMembershipIdQuery query)

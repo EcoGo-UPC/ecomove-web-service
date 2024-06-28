@@ -5,87 +5,44 @@ using ecomove_web_service.UserManagement.Infrastructure.Pipeline.Middleware.Attr
 
 namespace ecomove_web_service.UserManagement.Infrastructure.Pipeline.Middleware.Components;
 
-public class RequestAuthorizationMiddleware
+public class RequestAuthorizationMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public RequestAuthorizationMiddleware(RequestDelegate next)
-    {
-        _next = next ?? throw new ArgumentNullException(nameof(next));
-    }
-
     public async Task InvokeAsync(
         HttpContext context,
         IUserQueryService userQueryService,
         ITokenService tokenService)
     {
         Console.WriteLine("Entering InvokeAsync");
-
-        // Verificar si el endpoint no es nulo antes de acceder a su metadata
-        var endpoint = context.GetEndpoint();
+        var endpoint = context.Request.HttpContext.GetEndpoint();
         if (endpoint == null)
         {
-            Console.WriteLine("Endpoint is null, continuing with next middleware");
-            await _next(context);
-            return;
+            // Manejar el caso donde el endpoint es nulo
+            throw new InvalidOperationException("Endpoint not found");
         }
-
-        var allowAnonymous = endpoint.Metadata
+        var allowAnonymous = context.Request.HttpContext.GetEndpoint()!.Metadata
             .Any(m => m.GetType() == typeof(AllowAnonymousAttribute));
         Console.WriteLine($"Allow Anonymous is {allowAnonymous}");
-
         if (allowAnonymous)
         {
             Console.WriteLine("Skipping authorization");
-            await _next(context);
+            await next(context);
             return;
         }
-
         Console.WriteLine("Entering authorization");
-
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-        if (string.IsNullOrEmpty(token))
-        {
-            Console.WriteLine("Null or invalid token");
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsync("Unauthorized");
-            return;
-        }
+        if (token == null) throw new Exception("Null or invalid token");
 
-        try
-        {
-            var userId = await tokenService.ValidateToken(token);
+        var userId = await tokenService.ValidateToken(token);
 
-            if (userId == null)
-            {
-                Console.WriteLine("Invalid token");
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsync("Unauthorized");
-                return;
-            }
+        if (userId == null) throw new Exception("Invalid token");
 
-            var getUserByIdQuery = new GetUserByUserIdQuery(userId.Value);
-            var user = await userQueryService.Handle(getUserByIdQuery);
+        var getUserByIdQuery = new GetUserByUserIdQuery(userId.Value);
 
-            if (user == null)
-            {
-                Console.WriteLine("User not found");
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                await context.Response.WriteAsync("User not found");
-                return;
-            }
-
-            Console.WriteLine("Successful authorization. Updating Context...");
-            context.Items["User"] = user;
-            Console.WriteLine("Continuing with Middleware pipeline...");
-            await _next(context);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Exception during authorization: {ex.Message}");
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await context.Response.WriteAsync("Internal Server Error");
-        }
+        var user = await userQueryService.Handle(getUserByIdQuery);
+        Console.WriteLine("Successful authorization. Updating Context...");
+        context.Items["User"] = user;
+        Console.WriteLine("Continuing with Middleware pipeline...");
+        await next(context);
     }
 }

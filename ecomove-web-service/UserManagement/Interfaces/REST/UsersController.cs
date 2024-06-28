@@ -18,7 +18,7 @@ namespace ecomove_web_service.UserManagement.Interfaces.REST;
  * </remarks>
  */
 
-[Authorize]
+
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]

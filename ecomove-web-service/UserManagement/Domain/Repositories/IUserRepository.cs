@@ -3,6 +3,11 @@ using ecomove_web_service.UserManagement.Domain.Model.Aggregates;
 
 namespace ecomove_web_service.UserManagement.Domain.Repositories;
 
+/**
+ * IUserRepository interface
+ * Represents a repository for users
+ * A user is a person who uses the system
+ */
 public interface IUserRepository: IBaseRepository<User>
 {
     /**
